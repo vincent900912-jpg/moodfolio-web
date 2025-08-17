@@ -107,6 +107,14 @@ class MoodfolioApp {
         document.getElementById('notificationTime').addEventListener('change', (e) => {
             this.updateNotificationTime(e.target.value);
         });
+
+        // 備用主題選擇器初始化
+        setTimeout(() => {
+            const themeSelector = document.querySelector('.theme-selector');
+            if (themeSelector && themeSelector.children.length === 0) {
+                this.initThemeSelector();
+            }
+        }, 1000);
     }
 
     /**
@@ -223,6 +231,8 @@ class MoodfolioApp {
                 break;
             case 'settings':
                 this.loadSettings();
+                // 確保主題選擇器在設定頁面正確初始化
+                setTimeout(() => this.initThemeSelector(), 200);
                 break;
         }
     }
@@ -392,35 +402,45 @@ class MoodfolioApp {
      * 初始化主題選擇器
      */
     initThemeSelector() {
-        const themeSelector = document.querySelector('.theme-selector');
-        if (!themeSelector) return;
+        // 延遲初始化，確保 DOM 完全載入
+        setTimeout(() => {
+            const themeSelector = document.querySelector('.theme-selector');
+            if (!themeSelector) {
+                console.log('主題選擇器元素未找到，重試中...');
+                // 如果還沒找到，再試一次
+                setTimeout(() => this.initThemeSelector(), 500);
+                return;
+            }
 
-        const themes = [
-            { name: 'light', label: '淺色' },
-            { name: 'dark', label: '深色' },
-            { name: 'warm-orange', label: '溫暖橙' },
-            { name: 'fresh-green', label: '清新綠' },
-            { name: 'romantic-pink', label: '浪漫粉' },
-            { name: 'mystic-purple', label: '神秘紫' },
-            { name: 'ocean-blue', label: '海洋藍' },
-            { name: 'maple-red', label: '楓葉紅' },
-            { name: 'dark-warm', label: '暖深色' },
-            { name: 'dark-cool', label: '冷深色' }
-        ];
+            const themes = [
+                { name: 'light', label: '淺色' },
+                { name: 'dark', label: '深色' },
+                { name: 'warm-orange', label: '溫暖橙' },
+                { name: 'fresh-green', label: '清新綠' },
+                { name: 'romantic-pink', label: '浪漫粉' },
+                { name: 'mystic-purple', label: '神秘紫' },
+                { name: 'ocean-blue', label: '海洋藍' },
+                { name: 'maple-red', label: '楓葉紅' },
+                { name: 'dark-warm', label: '暖深色' },
+                { name: 'dark-cool', label: '冷深色' }
+            ];
 
-        themeSelector.innerHTML = '';
-        themes.forEach(theme => {
-            const option = document.createElement('div');
-            option.className = 'theme-option';
-            option.setAttribute('data-theme', theme.name);
-            option.setAttribute('title', theme.label);
-            option.addEventListener('click', () => this.setTheme(theme.name));
-            themeSelector.appendChild(option);
-        });
+            themeSelector.innerHTML = '';
+            themes.forEach(theme => {
+                const option = document.createElement('div');
+                option.className = 'theme-option';
+                option.setAttribute('data-theme', theme.name);
+                option.setAttribute('title', theme.label);
+                option.addEventListener('click', () => this.setTheme(theme.name));
+                themeSelector.appendChild(option);
+            });
 
-        // 設置當前主題
-        const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
-        this.updateThemeSelector(currentTheme);
+            // 設置當前主題
+            const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+            this.updateThemeSelector(currentTheme);
+            
+            console.log('主題選擇器初始化完成');
+        }, 100);
     }
 
     /**
