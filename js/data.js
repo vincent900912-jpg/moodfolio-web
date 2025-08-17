@@ -105,12 +105,12 @@ const QUOTES_DATA = [
 
 // 運勢等級
 const FORTUNE_LEVELS = [
-    { level: '大吉', color: '#dc2626', weight: 5 },
-    { level: '吉', color: '#ea580c', weight: 15 },
+    { level: '大凶', color: '#7c3aed', weight: 5 },
+    { level: '兇', color: '#0891b2', weight: 10 },
+    { level: '大吉', color: '#dc2626', weight: 10 },
+    { level: '吉', color: '#ea580c', weight: 20 },
     { level: '小吉', color: '#d97706', weight: 25 },
-    { level: '平', color: '#059669', weight: 35 },
-    { level: '兇', color: '#0891b2', weight: 15 },
-    { level: '大凶', color: '#7c3aed', weight: 5 }
+    { level: '平', color: '#059669', weight: 30 }
 ];
 
 // 運勢解籤文字
