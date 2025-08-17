@@ -21,6 +21,7 @@ class MoodfolioApp {
         this.loadTodayMood();
         this.showPage('today');
         this.setupKeyboardShortcuts();
+        this.initThemeSelector();
         
         // 顯示歡迎訊息
         if (!localStorage.getItem('moodfolio_initialized')) {
@@ -353,11 +354,14 @@ class MoodfolioApp {
         
         // 更新主題切換按鈕圖示
         const themeToggle = document.getElementById('themeToggle');
-        if (theme === 'dark') {
+        if (theme === 'dark' || theme === 'dark-warm' || theme === 'dark-cool') {
             themeToggle.textContent = '☀️';
         } else {
             themeToggle.textContent = '🌙';
         }
+        
+        // 更新主題選擇器
+        this.updateThemeSelector(theme);
     }
 
     /**
@@ -365,8 +369,58 @@ class MoodfolioApp {
      */
     toggleTheme() {
         const currentTheme = document.documentElement.getAttribute('data-theme');
-        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-        this.setTheme(newTheme);
+        const themes = ['light', 'dark', 'warm-orange', 'fresh-green', 'romantic-pink', 'mystic-purple', 'ocean-blue', 'maple-red', 'dark-warm', 'dark-cool'];
+        const currentIndex = themes.indexOf(currentTheme);
+        const nextIndex = (currentIndex + 1) % themes.length;
+        this.setTheme(themes[nextIndex]);
+    }
+
+    /**
+     * 更新主題選擇器
+     */
+    updateThemeSelector(activeTheme) {
+        const themeOptions = document.querySelectorAll('.theme-option');
+        themeOptions.forEach(option => {
+            option.classList.remove('active');
+            if (option.getAttribute('data-theme') === activeTheme) {
+                option.classList.add('active');
+            }
+        });
+    }
+
+    /**
+     * 初始化主題選擇器
+     */
+    initThemeSelector() {
+        const themeSelector = document.querySelector('.theme-selector');
+        if (!themeSelector) return;
+
+        const themes = [
+            { name: 'light', label: '淺色' },
+            { name: 'dark', label: '深色' },
+            { name: 'warm-orange', label: '溫暖橙' },
+            { name: 'fresh-green', label: '清新綠' },
+            { name: 'romantic-pink', label: '浪漫粉' },
+            { name: 'mystic-purple', label: '神秘紫' },
+            { name: 'ocean-blue', label: '海洋藍' },
+            { name: 'maple-red', label: '楓葉紅' },
+            { name: 'dark-warm', label: '暖深色' },
+            { name: 'dark-cool', label: '冷深色' }
+        ];
+
+        themeSelector.innerHTML = '';
+        themes.forEach(theme => {
+            const option = document.createElement('div');
+            option.className = 'theme-option';
+            option.setAttribute('data-theme', theme.name);
+            option.setAttribute('title', theme.label);
+            option.addEventListener('click', () => this.setTheme(theme.name));
+            themeSelector.appendChild(option);
+        });
+
+        // 設置當前主題
+        const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+        this.updateThemeSelector(currentTheme);
     }
 
     /**

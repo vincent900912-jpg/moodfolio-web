@@ -1,8 +1,9 @@
 /* 基礎重置和變數 */
 :root {
-    /* 顏色變數 */
+    /* 顏色變數 - 這些將被主題覆蓋 */
     --primary-color: #6366f1;
     --primary-hover: #5855eb;
+    --accent-color: #8b5cf6;
     --secondary-color: #64748b;
     --success-color: #10b981;
     --danger-color: #ef4444;

@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>心情手札 - 主題預覽</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/components.css">
+    <link rel="stylesheet" href="styles/themes.css">
+    <style>
+        .theme-preview {
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .theme-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .theme-card {
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+        }
+        
+        .theme-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .theme-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+        
+        .theme-name {
+            font-size: var(--font-size-xl);
+            font-weight: bold;
+            color: var(--text-primary);
+        }
+        
+        .theme-option {
+            width: 2rem;
+            height: 2rem;
+            border-radius: 50%;
+            border: 2px solid var(--border-color);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .theme-option:hover {
+            transform: scale(1.1);
+            border-color: var(--primary-color);
+        }
+        
+        .theme-option.active {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px var(--primary-color);
+        }
+        
+        .theme-demo {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .demo-button {
+            padding: 0.5rem 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            background-color: var(--bg-secondary);
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .demo-button:hover {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+        
+        .demo-button.primary {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+        
+        .demo-text {
+            color: var(--text-secondary);
+            font-size: var(--font-size-sm);
+        }
+        
+        .demo-input {
+            padding: 0.5rem;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+        }
+        
+        .demo-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+        
+        .back-button {
+            position: fixed;
+            top: 2rem;
+            left: 2rem;
+            padding: 0.75rem 1.5rem;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.2s ease;
+        }
+        
+        .back-button:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <a href="index.html" class="back-button">← 返回主頁</a>
+    
+    <div class="theme-preview">
+        <h1>🎨 主題預覽</h1>
+        <p>點擊下方的主題圓圈來預覽不同的顏色主題</p>
+        
+        <div class="theme-grid">
+            <!-- 淺色主題 -->
+            <div class="theme-card" data-theme="light">
+                <div class="theme-header">
+                    <div class="theme-name">淺色主題</div>
+                    <div class="theme-option active" data-theme="light"></div>
+                </div>
+                <div class="theme-demo">
+                    <button class="demo-button primary">主要按鈕</button>
+                    <button class="demo-button">次要按鈕</button>
+                    <input type="text" class="demo-input" placeholder="輸入框範例" value="Hello World">
+                    <p class="demo-text">這是一個淺色主題的範例，適合日間使用。</p>
+                </div>
+            </div>
+            
+            <!-- 深色主題 -->
+            <div class="theme-card" data-theme="dark">
+                <div class="theme-header">
+                    <div class="theme-name">深色主題</div>
+                    <div class="theme-option" data-theme="dark"></div>
+                </div>
+                <div class="theme-demo">
+                    <button class="demo-button primary">主要按鈕</button>
+                    <button class="demo-button">次要按鈕</button>
+                    <input type="text" class="demo-input" placeholder="輸入框範例" value="Hello World">
+                    <p class="demo-text">這是一個深色主題的範例，適合夜間使用。</p>
+                </div>
+            </div>
+            
+            <!-- 溫暖橙色主題 -->
+            <div class="theme-card" data-theme="warm-orange">
+                <div class="theme-header">
+                    <div class="theme-name">🌅 溫暖橙色</div>
+                    <div class="theme-option" data-theme="warm-orange"></div>
+                </div>
+                <div class="theme-demo">
+                    <button class="demo-button primary">主要按鈕</button>
+                    <button class="demo-button">次要按鈕</button>
+                    <input type="text" class="demo-input" placeholder="輸入框範例" value="Hello World">
+                    <p class="demo-text">溫暖的橙色主題，帶來陽光般的溫暖感受。</p>
+                </div>
+            </div>
+            
+            <!-- 清新綠色主題 -->
+            <div class="theme-card" data-theme="fresh-green">
+                <div class="theme-header">
+                    <div class="theme-name">🌿 清新綠色</div>
+                    <div class="theme-option" data-theme="fresh-green"></div>
+                </div>
+                <div class="theme-demo">
+                    <button class="demo-button primary">主要按鈕</button>
+                    <button class="demo-button">次要按鈕</button>
+                    <input type="text" class="demo-input" placeholder="輸入框範例" value="Hello World">
+                    <p class="demo-text">清新的綠色主題，如同置身於大自然中。</p>
+                </div>
+            </div>
+            
+            <!-- 浪漫粉色主題 -->
+            <div class="theme-card" data-theme="romantic-pink">
+                <div class="theme-header">
+                    <div class="theme-name">💖 浪漫粉色</div>
+                    <div class="theme-option" data-theme="romantic-pink"></div>
+                </div>
+                <div class="theme-demo">
+                    <button class="demo-button primary">主要按鈕</button>
+                    <button class="demo-button">次要按鈕</button>
+                    <input type="text" class="demo-input" placeholder="輸入框範例" value="Hello World">
+                    <p class="demo-text">浪漫的粉色主題，充滿愛與溫柔的氣息。</p>
+                </div>
+            </div>
+            
+            <!-- 神秘紫色主題 -->
+            <div class="theme-card" data-theme="mystic-purple">
+                <div class="theme-header">
+                    <div class="theme-name">🔮 神秘紫色</div>
+                    <div class="theme-option" data-theme="mystic-purple"></div>
+                </div>
+                <div class="theme-demo">
+                    <button class="demo-button primary">主要按鈕</button>
+                    <button class="demo-button">次要按鈕</button>
+                    <input type="text" class="demo-input" placeholder="輸入框範例" value="Hello World">
+                    <p class="demo-text">神秘的紫色主題，充滿魔法與想像力。</p>
+                </div>
+            </div>
+            
+            <!-- 海洋藍色主題 -->
+            <div class="theme-card" data-theme="ocean-blue">
+                <div class="theme-header">
+                    <div class="theme-name">🌊 海洋藍色</div>
+                    <div class="theme-option" data-theme="ocean-blue"></div>
+                </div>
+                <div class="theme-demo">
+                    <button class="demo-button primary">主要按鈕</button>
+                    <button class="demo-button">次要按鈕</button>
+                    <input type="text" class="demo-input" placeholder="輸入框範例" value="Hello World">
+                    <p class="demo-text">寧靜的藍色主題，如同深海的寧靜與深邃。</p>
+                </div>
+            </div>
+            
+            <!-- 楓葉紅色主題 -->
+            <div class="theme-card" data-theme="maple-red">
+                <div class="theme-header">
+                    <div class="theme-name">🍁 楓葉紅色</div>
+                    <div class="theme-option" data-theme="maple-red"></div>
+                </div>
+                <div class="theme-demo">
+                    <button class="demo-button primary">主要按鈕</button>
+                    <button class="demo-button">次要按鈕</button>
+                    <input type="text" class="demo-input" placeholder="輸入框範例" value="Hello World">
+                    <p class="demo-text">熱情的紅色主題，如同秋天的楓葉般絢麗。</p>
+                </div>
+            </div>
+            
+            <!-- 暖深色主題 -->
+            <div class="theme-card" data-theme="dark-warm">
+                <div class="theme-header">
+                    <div class="theme-name">🌙 暖深色</div>
+                    <div class="theme-option" data-theme="dark-warm"></div>
+                </div>
+                <div class="theme-demo">
+                    <button class="demo-button primary">主要按鈕</button>
+                    <button class="demo-button">次要按鈕</button>
+                    <input type="text" class="demo-input" placeholder="輸入框範例" value="Hello World">
+                    <p class="demo-text">溫暖的深色主題，在黑暗中帶來一絲暖意。</p>
+                </div>
+            </div>
+            
+            <!-- 冷深色主題 -->
+            <div class="theme-card" data-theme="dark-cool">
+                <div class="theme-header">
+                    <div class="theme-name">🌙 冷深色</div>
+                    <div class="theme-option" data-theme="dark-cool"></div>
+                </div>
+                <div class="theme-demo">
+                    <button class="demo-button primary">主要按鈕</button>
+                    <button class="demo-button">次要按鈕</button>
+                    <input type="text" class="demo-input" placeholder="輸入框範例" value="Hello World">
+                    <p class="demo-text">冷靜的深色主題，如同夜晚的寧靜與清涼。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 主題切換功能
+        document.querySelectorAll('.theme-option').forEach(option => {
+            option.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const theme = option.getAttribute('data-theme');
+                
+                // 更新所有主題選項的狀態
+                document.querySelectorAll('.theme-option').forEach(opt => {
+                    opt.classList.remove('active');
+                });
+                option.classList.add('active');
+                
+                // 設置主題
+                document.documentElement.setAttribute('data-theme', theme);
+            });
+        });
+        
+        // 主題卡片點擊切換
+        document.querySelectorAll('.theme-card').forEach(card => {
+            card.addEventListener('click', (e) => {
+                if (!e.target.classList.contains('theme-option')) {
+                    const theme = card.getAttribute('data-theme');
+                    document.documentElement.setAttribute('data-theme', theme);
+                    
+                    // 更新選中的主題選項
+                    document.querySelectorAll('.theme-option').forEach(opt => {
+                        opt.classList.remove('active');
+                        if (opt.getAttribute('data-theme') === theme) {
+                            opt.classList.add('active');
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
