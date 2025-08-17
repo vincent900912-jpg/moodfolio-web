@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>創建圖標工具</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .upload-area {
+            border: 2px dashed #ccc;
+            border-radius: 10px;
+            width: 100%;
+            height: 200px;
+            text-align: center;
+            padding: 20px;
+            margin: 20px 0;
+            cursor: pointer;
+            transition: border-color 0.3s ease;
+        }
+        .upload-area:hover {
+            border-color: #6366f1;
+        }
+        .upload-area.dragover {
+            border-color: #6366f1;
+            background-color: #f0f0ff;
+        }
+        .preview {
+            display: none;
+            margin: 20px 0;
+        }
+        .preview img {
+            max-width: 200px;
+            max-height: 200px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .icon-sizes {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .icon-size {
+            text-align: center;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+        .icon-size canvas {
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .download-btn {
+            background-color: #6366f1;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: all 0.2s ease;
+        }
+        .download-btn:hover:not(:disabled) {
+            background-color: #5855eb;
+            transform: translateY(-1px);
+        }
+        .download-btn:disabled {
+            background-color: #9ca3af;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .instructions {
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .code-block {
+            background-color: #1e293b;
+            color: #f1f5f9;
+            padding: 15px;
+            border-radius: 6px;
+            font-family: 'Courier New', monospace;
+            margin: 10px 0;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>🎨 心情手札圖標創建工具</h1>
+    
+    <div class="instructions">
+        <h2>📝 使用說明</h2>
+        <ol>
+            <li>上傳您想要使用的圖片（建議正方形，至少 512x512 像素）</li>
+            <li>工具會自動生成所需的各種尺寸圖標</li>
+            <li>下載生成的圖標文件</li>
+            <li>將圖標文件放到 <code>icons/</code> 文件夾中</li>
+        </ol>
+    </div>
+
+    <div class="upload-area" id="uploadArea">
+        <p>🖼️ 點擊或拖拽圖片到此處上傳</p>
+        <p>支持 JPG, PNG, GIF 格式</p>
+        <input type="file" id="fileInput" accept="image/*" style="display: none;">
+    </div>
+
+    <div class="preview" id="preview">
+        <h3>預覽</h3>
+        <img id="previewImg" alt="預覽">
+    </div>
+
+    <div class="icon-sizes" id="iconSizes" style="display: none;">
+        <h3 style="grid-column: 1/-1;">生成的圖標</h3>
+    </div>
+
+    <div class="instructions">
+        <h2>🔧 手動安裝圖標</h2>
+        <p>如果您已經有準備好的圖標文件，請將它們重命名並放到 <code>icons/</code> 文件夾中：</p>
+        <div class="code-block">
+icons/
+├── favicon.png (32x32)
+├── icon-72x72.png
+├── icon-96x96.png
+├── icon-128x128.png
+├── icon-144x144.png
+├── icon-152x152.png
+├── icon-192x192.png
+├── icon-384x384.png
+└── icon-512x512.png
+        </div>
+    </div>
+
+    <script>
+        const uploadArea = document.getElementById('uploadArea');
+        const fileInput = document.getElementById('fileInput');
+        const preview = document.getElementById('preview');
+        const previewImg = document.getElementById('previewImg');
+        const iconSizes = document.getElementById('iconSizes');
+
+        const sizes = [72, 96, 128, 144, 152, 192, 384, 512];
+        const faviconSize = 32;
+
+        uploadArea.addEventListener('click', () => fileInput.click());
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        });
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.classList.remove('dragover');
+        });
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                handleFile(files[0]);
+            }
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                handleFile(e.target.files[0]);
+            }
+        });
+
+        function handleFile(file) {
+            console.log('處理文件:', file.name, file.type, file.size);
+            
+            if (!file.type.startsWith('image/')) {
+                alert('請選擇圖片文件！');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                console.log('文件讀取完成');
+                const img = new Image();
+                img.onload = () => {
+                    console.log('圖片載入完成:', img.width, 'x', img.height);
+                    previewImg.src = e.target.result;
+                    preview.style.display = 'block';
+                    generateIcons(img);
+                };
+                img.onerror = (error) => {
+                    console.error('圖片載入失敗:', error);
+                    alert('圖片載入失敗，請檢查文件格式');
+                };
+                img.src = e.target.result;
+            };
+            reader.onerror = (error) => {
+                console.error('文件讀取失敗:', error);
+                alert('文件讀取失敗');
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function generateIcons(sourceImg) {
+            iconSizes.style.display = 'grid';
+            iconSizes.innerHTML = '<h3 style="grid-column: 1/-1;">生成的圖標</h3>';
+
+            // 生成 favicon
+            generateIcon(sourceImg, faviconSize, 'favicon.png');
+
+            // 生成其他尺寸圖標
+            sizes.forEach(size => {
+                generateIcon(sourceImg, size, `icon-${size}x${size}.png`);
+            });
+        }
+
+        function generateIcon(sourceImg, size, filename) {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = size;
+            canvas.height = size;
+
+            // 繪製背景（可選）
+            // ctx.fillStyle = '#6366f1';
+            // roundRect(ctx, 0, 0, size, size, size * 0.2);
+            // ctx.fill();
+
+            // 計算圖片尺寸，保持比例並填滿整個 canvas
+            const sourceRatio = sourceImg.width / sourceImg.height;
+            let drawWidth, drawHeight, offsetX, offsetY;
+            
+            if (sourceRatio > 1) {
+                // 圖片較寬
+                drawHeight = size;
+                drawWidth = size * sourceRatio;
+                offsetX = (size - drawWidth) / 2;
+                offsetY = 0;
+            } else {
+                // 圖片較高或正方形
+                drawWidth = size;
+                drawHeight = size / sourceRatio;
+                offsetX = 0;
+                offsetY = (size - drawHeight) / 2;
+            }
+            
+            // 繪製圖片
+            ctx.drawImage(sourceImg, offsetX, offsetY, drawWidth, drawHeight);
+
+            // 創建下載鏈接
+            const iconDiv = document.createElement('div');
+            iconDiv.className = 'icon-size';
+            
+            const title = document.createElement('h4');
+            title.textContent = `${size}x${size}`;
+            
+            const displayCanvas = document.createElement('canvas');
+            displayCanvas.width = size;
+            displayCanvas.height = size;
+            const displayCtx = displayCanvas.getContext('2d');
+            displayCtx.drawImage(canvas, 0, 0);
+            
+            const br = document.createElement('br');
+            
+            const button = document.createElement('button');
+            button.className = 'download-btn';
+            button.textContent = `下載 ${filename}`;
+            button.addEventListener('click', (e) => {
+                e.preventDefault();
+                console.log(`點擊下載按鈕: ${filename}`);
+                button.textContent = '下載中...';
+                button.disabled = true;
+                
+                setTimeout(() => {
+                    downloadCanvas(displayCanvas, filename);
+                    button.textContent = `下載 ${filename}`;
+                    button.disabled = false;
+                }, 100);
+            });
+
+            iconDiv.appendChild(title);
+            iconDiv.appendChild(displayCanvas);
+            iconDiv.appendChild(br);
+            iconDiv.appendChild(button);
+
+            iconSizes.appendChild(iconDiv);
+        }
+
+        function roundRect(ctx, x, y, width, height, radius) {
+            ctx.beginPath();
+            ctx.moveTo(x + radius, y);
+            ctx.lineTo(x + width - radius, y);
+            ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+            ctx.lineTo(x + width, y + height - radius);
+            ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+            ctx.lineTo(x + radius, y + height);
+            ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+            ctx.lineTo(x, y + radius);
+            ctx.quadraticCurveTo(x, y, x + radius, y);
+            ctx.closePath();
+        }
+
+        function downloadCanvas(canvas, filename) {
+            try {
+                const link = document.createElement('a');
+                link.download = filename;
+                link.href = canvas.toDataURL('image/png');
+                
+                // 確保鏈接被添加到文檔中
+                document.body.appendChild(link);
+                link.click();
+                
+                // 清理
+                setTimeout(() => {
+                    document.body.removeChild(link);
+                }, 100);
+                
+                console.log(`已下載: ${filename}`);
+            } catch (error) {
+                console.error('下載失敗:', error);
+                alert('下載失敗，請檢查瀏覽器設置或嘗試其他瀏覽器');
+            }
+        }
+    </script>
+</body>
+</html>

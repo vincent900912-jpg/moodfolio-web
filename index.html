@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>心情手札 Moodfolio</title>
+    <meta name="description" content="記錄每日心情，查看心靈雞湯，抽今日運勢">
+    <meta name="theme-color" content="#6366f1">
+    
+    <!-- PWA 配置 -->
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="icons/icon-192x192.png">
+    
+    <!-- 樣式 -->
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/components.css">
+    <link rel="stylesheet" href="styles/themes.css">
+    
+    <!-- 圖標 -->
+    <link rel="icon" type="image/png" href="icons/favicon.png">
+</head>
+<body>
+    <!-- 導覽列 -->
+    <nav class="navbar">
+        <div class="nav-brand">
+            <span class="brand-icon">📝</span>
+            <h1>心情手札</h1>
+        </div>
+        <div class="nav-menu">
+            <button class="nav-item active" data-page="today">今日心情</button>
+            <button class="nav-item" data-page="calendar">日曆</button>
+            <button class="nav-item" data-page="quotes">心靈雞湯</button>
+            <button class="nav-item" data-page="favorites">收藏</button>
+            <button class="nav-item" data-page="fortune">今日運勢</button>
+            <button class="nav-item" data-page="stats">統計</button>
+            <button class="nav-item" data-page="settings">設定</button>
+        </div>
+        <div class="nav-actions">
+            <button class="theme-toggle" id="themeToggle">🌙</button>
+        </div>
+    </nav>
+
+    <!-- 主要內容區域 -->
+    <main class="main-content">
+        <!-- 今日心情頁面 -->
+        <div class="page active" id="today-page">
+            <div class="page-header">
+                <h2>今日心情</h2>
+                <p class="date-display" id="todayDate"></p>
+            </div>
+            
+            <div class="mood-selector">
+                <h3>選擇心情</h3>
+                <div class="mood-grid">
+                    <button class="mood-btn" data-mood="HAPPY">😀 開心</button>
+                    <button class="mood-btn" data-mood="SAD">😢 難過</button>
+                    <button class="mood-btn" data-mood="ANGRY">😡 生氣</button>
+                    <button class="mood-btn" data-mood="CALM">😌 平靜</button>
+                    <button class="mood-btn" data-mood="TIRED">😴 疲憊</button>
+                    <button class="mood-btn" data-mood="WORRIED">😟 擔心</button>
+                    <button class="mood-btn" data-mood="SMILE">🙂 微笑</button>
+                    <button class="mood-btn" data-mood="LOVE">🤗 溫暖</button>
+                </div>
+            </div>
+            
+            <div class="note-section">
+                <h3>心情筆記</h3>
+                <textarea id="moodNote" placeholder="寫下今天的心情..."></textarea>
+            </div>
+            
+            <div class="action-buttons">
+                <button class="btn btn-primary" id="saveMood">儲存心情</button>
+                <button class="btn btn-secondary" id="clearMood">清除</button>
+            </div>
+        </div>
+
+        <!-- 日曆頁面 -->
+        <div class="page" id="calendar-page">
+            <div class="page-header">
+                <h2>心情日曆</h2>
+                <div class="calendar-controls">
+                    <button class="btn btn-icon" id="prevMonth">←</button>
+                    <h3 id="calendarTitle"></h3>
+                    <button class="btn btn-icon" id="nextMonth">→</button>
+                </div>
+            </div>
+            
+            <div class="calendar-container">
+                <div class="calendar-header">
+                    <div>日</div>
+                    <div>一</div>
+                    <div>二</div>
+                    <div>三</div>
+                    <div>四</div>
+                    <div>五</div>
+                    <div>六</div>
+                </div>
+                <div class="calendar-grid" id="calendarGrid"></div>
+            </div>
+            
+            <div class="calendar-detail" id="calendarDetail" style="display: none;">
+                <div class="detail-header">
+                    <h3 id="detailDate"></h3>
+                    <button class="btn btn-icon" id="closeDetail">×</button>
+                </div>
+                <div class="detail-content">
+                    <div class="detail-mood" id="detailMood"></div>
+                    <div class="detail-note" id="detailNote"></div>
+                </div>
+                <div class="detail-actions">
+                    <button class="btn btn-primary" id="editDetail">編輯</button>
+                    <button class="btn btn-danger" id="deleteDetail">刪除</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 心靈雞湯頁面 -->
+        <div class="page" id="quotes-page">
+            <div class="page-header">
+                <h2>心靈雞湯</h2>
+            </div>
+            
+            <div class="quote-display">
+                <div class="quote-card">
+                    <p id="currentQuote">點擊下方按鈕開始抽一句心靈雞湯</p>
+                    <div class="quote-actions">
+                        <button class="btn btn-primary" id="newQuote">再抽一條</button>
+                        <button class="btn btn-secondary" id="favoriteQuote">加入收藏</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 收藏頁面 -->
+        <div class="page" id="favorites-page">
+            <div class="page-header">
+                <h2>收藏清單</h2>
+            </div>
+            
+            <div class="favorites-list" id="favoritesList">
+                <!-- 收藏項目將動態生成 -->
+            </div>
+        </div>
+
+        <!-- 今日運勢頁面 -->
+        <div class="page" id="fortune-page">
+            <div class="page-header">
+                <h2>今日運勢</h2>
+            </div>
+            
+            <div class="fortune-display">
+                <div class="fortune-card">
+                    <div class="fortune-main">
+                        <h3 id="fortuneLevel">點擊抽籤開始</h3>
+                    </div>
+                    
+                    <div class="fortune-details" id="fortuneDetails" style="display: none;">
+                        <div class="fortune-item">
+                            <label>解籤：</label>
+                            <p id="fortuneInterpretation"></p>
+                        </div>
+                        <div class="fortune-item">
+                            <label>幸運色：</label>
+                            <div class="lucky-color">
+                                <span class="color-block" id="luckyColorBlock"></span>
+                                <span id="luckyColorName"></span>
+                            </div>
+                        </div>
+                        <div class="fortune-item">
+                            <label>幸運數字：</label>
+                            <span id="luckyNumber"></span>
+                        </div>
+                        <div class="fortune-item">
+                            <label>幸運物品：</label>
+                            <div>
+                                <span id="luckyItem"></span>
+                                <p class="item-suggestion" id="itemSuggestion"></p>
+                            </div>
+                        </div>
+                        <div class="fortune-item">
+                            <label>幸運方向：</label>
+                            <span id="luckyDirection"></span>
+                        </div>
+                    </div>
+                    
+                    <div class="fortune-actions">
+                        <button class="btn btn-primary" id="drawFortune">抽籤</button>
+                        <button class="btn btn-secondary" id="redrawFortune" style="display: none;">逆天改命</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 統計頁面 -->
+        <div class="page" id="stats-page">
+            <div class="page-header">
+                <h2>心情統計</h2>
+            </div>
+            
+            <div class="stats-container">
+                <div class="stats-card">
+                    <h3>本月心情分布</h3>
+                    <canvas id="moodChart" width="400" height="300"></canvas>
+                </div>
+                
+                <div class="stats-card">
+                    <h3>連續記錄</h3>
+                    <div class="streak-info">
+                        <div class="streak-number" id="currentStreak">0</div>
+                        <div class="streak-label">天</div>
+                    </div>
+                    <p>本月最長連續記錄天數</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 設定頁面 -->
+        <div class="page" id="settings-page">
+            <div class="page-header">
+                <h2>設定</h2>
+            </div>
+            
+            <div class="settings-container">
+                <div class="settings-section">
+                    <h3>主題設定</h3>
+                    <div class="setting-item">
+                        <label>主題模式：</label>
+                        <select id="themeSelect">
+                            <option value="light">淺色</option>
+                            <option value="dark">深色</option>
+                            <option value="auto">跟隨系統</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="settings-section">
+                    <h3>資料管理</h3>
+                    <div class="setting-item">
+                        <button class="btn btn-primary" id="exportData">匯出資料</button>
+                        <button class="btn btn-secondary" id="importData">匯入資料</button>
+                    </div>
+                    <input type="file" id="importFile" accept=".json" style="display: none;">
+                </div>
+                
+                <div class="settings-section">
+                    <h3>通知設定</h3>
+                    <div class="setting-item">
+                        <label>
+                            <input type="checkbox" id="enableNotification">
+                            啟用每日提醒
+                        </label>
+                    </div>
+                    <div class="setting-item">
+                        <label>提醒時間：</label>
+                        <input type="time" id="notificationTime" value="20:00">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Toast 通知 -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- 模態對話框 -->
+    <div class="modal" id="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle"></h3>
+                <button class="btn btn-icon" id="closeModal">×</button>
+            </div>
+            <div class="modal-body" id="modalBody"></div>
+            <div class="modal-footer" id="modalFooter"></div>
+        </div>
+    </div>
+
+    <!-- 開發者資訊 -->
+    <footer class="developer-info">
+        <div class="developer-content">
+            <p>開發者：Vincent</p>
+            <p>有問題請聯繫：<a href="mailto:vincent900912@gmail.com">vincent900912@gmail.com</a></p>
+        </div>
+    </footer>
+
+    <!-- 腳本 -->
+    <script src="js/app.js"></script>
+    <script src="js/data.js"></script>
+    <script src="js/storage.js"></script>
+    <script src="js/calendar.js"></script>
+    <script src="js/quotes.js"></script>
+    <script src="js/fortune.js"></script>
+    <script src="js/stats.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/pwa.js"></script>
+</body>
+</html>

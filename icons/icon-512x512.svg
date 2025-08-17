@@ -1,0 +1,28 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景圓角矩形 -->
+  <rect width="512" height="512" rx="102" fill="#6366f1"/>
+  
+  <!-- 日記本 -->
+  <rect x="128" y="106" width="256" height="300" rx="20" fill="#ffffff" stroke="#e2e8f0" stroke-width="4"/>
+  
+  <!-- 螺旋裝訂 -->
+  <circle cx="192" cy="150" r="10" fill="#94a3b8"/>
+  <circle cx="256" cy="150" r="10" fill="#94a3b8"/>
+  <circle cx="320" cy="150" r="10" fill="#94a3b8"/>
+  
+  <!-- 文字線條 -->
+  <rect x="160" y="200" width="192" height="8" rx="4" fill="#cbd5e1"/>
+  <rect x="160" y="230" width="160" height="8" rx="4" fill="#cbd5e1"/>
+  <rect x="160" y="260" width="176" height="8" rx="4" fill="#cbd5e1"/>
+  <rect x="160" y="290" width="144" height="8" rx="4" fill="#cbd5e1"/>
+  <rect x="160" y="320" width="168" height="8" rx="4" fill="#cbd5e1"/>
+  
+  <!-- 心情表情 -->
+  <circle cx="256" cy="360" r="32" fill="#fbbf24"/>
+  <circle cx="240" cy="348" r="6" fill="#1f2937"/>
+  <circle cx="272" cy="348" r="6" fill="#1f2937"/>
+  <path d="M232 372 Q256 384 280 372" stroke="#1f2937" stroke-width="4" fill="none" stroke-linecap="round"/>
+  
+  <!-- 運勢符號 -->
+  <text x="320" y="380" font-family="serif" font-size="24" fill="#fbbf24">✨</text>
+</svg>

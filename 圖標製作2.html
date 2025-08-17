@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>更新心情手札圖標</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .upload-area {
+            border: 3px dashed #6366f1;
+            border-radius: 12px;
+            width: 100%;
+            height: 200px;
+            text-align: center;
+            padding: 20px;
+            margin: 20px 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: #f8fafc;
+        }
+        .upload-area:hover {
+            border-color: #5855eb;
+            background: #f0f0ff;
+            transform: translateY(-2px);
+        }
+        .upload-area.dragover {
+            border-color: #5855eb;
+            background: #e0e7ff;
+            transform: scale(1.02);
+        }
+        .preview-section {
+            display: none;
+            margin: 30px 0;
+            text-align: center;
+        }
+        .preview-section img {
+            max-width: 300px;
+            max-height: 300px;
+            border-radius: 12px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+            margin: 20px 0;
+        }
+        .icons-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+        .icon-item {
+            text-align: center;
+            padding: 20px;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            background: #f9fafb;
+            transition: transform 0.2s ease;
+        }
+        .icon-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .icon-item canvas {
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            margin: 10px 0;
+        }
+        .download-btn {
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            width: 100%;
+        }
+        .download-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(99, 102, 241, 0.3);
+        }
+        .download-btn:disabled {
+            background: #9ca3af;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .instructions {
+            background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+            border: 1px solid #0ea5e9;
+            border-radius: 12px;
+            padding: 25px;
+            margin: 20px 0;
+        }
+        .success-message {
+            background: #dcfce7;
+            color: #166534;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #16a34a;
+            margin: 20px 0;
+            display: none;
+        }
+        .step {
+            background: #f8fafc;
+            border-left: 4px solid #6366f1;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        .highlight {
+            background: #fef3c7;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎨 心情手札圖標更新工具</h1>
+        
+        <div class="instructions">
+            <h2>📝 使用步驟</h2>
+            <div class="step">
+                <strong>步驟 1:</strong> 上傳您的動漫角色圖片（支持 JPG, PNG, GIF）
+            </div>
+            <div class="step">
+                <strong>步驟 2:</strong> 工具會自動生成所有需要的圖標尺寸
+            </div>
+            <div class="step">
+                <strong>步驟 3:</strong> 點擊 <span class="highlight">"一鍵下載所有圖標"</span> 或單獨下載
+            </div>
+            <div class="step">
+                <strong>步驟 4:</strong> 將下載的圖標文件放到 <span class="highlight">icons/</span> 文件夾中
+            </div>
+        </div>
+
+        <div class="upload-area" id="uploadArea">
+            <h3>🖼️ 點擊或拖拽圖片到此處</h3>
+            <p>支持 JPG, PNG, GIF 格式，建議正方形圖片</p>
+            <input type="file" id="fileInput" accept="image/*" style="display: none;">
+        </div>
+
+        <div class="preview-section" id="previewSection">
+            <h2>預覽</h2>
+            <img id="previewImg" alt="預覽圖片">
+            <br>
+            <button class="download-btn" id="downloadAllBtn" style="max-width: 300px; margin: 20px auto;">
+                📦 一鍵下載所有圖標 (ZIP)
+            </button>
+        </div>
+
+        <div class="icons-grid" id="iconsGrid"></div>
+
+        <div class="success-message" id="successMessage">
+            ✅ 圖標生成成功！請下載並替換 icons/ 文件夾中的圖標文件。
+        </div>
+    </div>
+
+    <script>
+        const uploadArea = document.getElementById('uploadArea');
+        const fileInput = document.getElementById('fileInput');
+        const previewSection = document.getElementById('previewSection');
+        const previewImg = document.getElementById('previewImg');
+        const iconsGrid = document.getElementById('iconsGrid');
+        const downloadAllBtn = document.getElementById('downloadAllBtn');
+        const successMessage = document.getElementById('successMessage');
+
+        // 需要生成的圖標尺寸
+        const iconSizes = [
+            { size: 32, name: 'favicon.png' },
+            { size: 72, name: 'icon-72x72.png' },
+            { size: 96, name: 'icon-96x96.png' },
+            { size: 128, name: 'icon-128x128.png' },
+            { size: 144, name: 'icon-144x144.png' },
+            { size: 152, name: 'icon-152x152.png' },
+            { size: 192, name: 'icon-192x192.png' },
+            { size: 384, name: 'icon-384x384.png' },
+            { size: 512, name: 'icon-512x512.png' }
+        ];
+
+        let generatedIcons = [];
+
+        // 事件監聽器
+        uploadArea.addEventListener('click', () => fileInput.click());
+        uploadArea.addEventListener('dragover', handleDragOver);
+        uploadArea.addEventListener('dragleave', handleDragLeave);
+        uploadArea.addEventListener('drop', handleDrop);
+        fileInput.addEventListener('change', handleFileSelect);
+        downloadAllBtn.addEventListener('click', downloadAllIcons);
+
+        function handleDragOver(e) {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        }
+
+        function handleDragLeave(e) {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+        }
+
+        function handleDrop(e) {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                processFile(files[0]);
+            }
+        }
+
+        function handleFileSelect(e) {
+            if (e.target.files.length > 0) {
+                processFile(e.target.files[0]);
+            }
+        }
+
+        function processFile(file) {
+            if (!file.type.startsWith('image/')) {
+                alert('請選擇圖片文件！');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const img = new Image();
+                img.onload = () => {
+                    previewImg.src = e.target.result;
+                    previewSection.style.display = 'block';
+                    generateAllIcons(img);
+                    successMessage.style.display = 'block';
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function generateAllIcons(sourceImg) {
+            iconsGrid.innerHTML = '';
+            generatedIcons = [];
+
+            iconSizes.forEach(({ size, name }) => {
+                const iconData = generateIcon(sourceImg, size, name);
+                generatedIcons.push(iconData);
+                createIconDisplay(iconData);
+            });
+        }
+
+        function generateIcon(sourceImg, size, filename) {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = size;
+            canvas.height = size;
+
+            // 計算圖片尺寸，保持比例並填滿 canvas
+            const scale = Math.max(size / sourceImg.width, size / sourceImg.height);
+            const scaledWidth = sourceImg.width * scale;
+            const scaledHeight = sourceImg.height * scale;
+            const offsetX = (size - scaledWidth) / 2;
+            const offsetY = (size - scaledHeight) / 2;
+
+            // 繪製圖片
+            ctx.drawImage(sourceImg, offsetX, offsetY, scaledWidth, scaledHeight);
+
+            return {
+                canvas: canvas,
+                filename: filename,
+                size: size,
+                dataUrl: canvas.toDataURL('image/png')
+            };
+        }
+
+        function createIconDisplay(iconData) {
+            const iconDiv = document.createElement('div');
+            iconDiv.className = 'icon-item';
+
+            const title = document.createElement('h4');
+            title.textContent = `${iconData.size}×${iconData.size}`;
+
+            const canvas = document.createElement('canvas');
+            canvas.width = Math.min(iconData.size, 100);
+            canvas.height = Math.min(iconData.size, 100);
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(iconData.canvas, 0, 0, canvas.width, canvas.height);
+
+            const filename = document.createElement('p');
+            filename.textContent = iconData.filename;
+            filename.style.fontSize = '12px';
+            filename.style.color = '#6b7280';
+
+            const button = document.createElement('button');
+            button.className = 'download-btn';
+            button.textContent = '下載';
+            button.addEventListener('click', () => downloadIcon(iconData));
+
+            iconDiv.appendChild(title);
+            iconDiv.appendChild(canvas);
+            iconDiv.appendChild(filename);
+            iconDiv.appendChild(button);
+
+            iconsGrid.appendChild(iconDiv);
+        }
+
+        function downloadIcon(iconData) {
+            const link = document.createElement('a');
+            link.download = iconData.filename;
+            link.href = iconData.dataUrl;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        async function downloadAllIcons() {
+            if (generatedIcons.length === 0) {
+                alert('請先上傳圖片生成圖標！');
+                return;
+            }
+
+            downloadAllBtn.textContent = '正在打包...';
+            downloadAllBtn.disabled = true;
+
+            try {
+                // 由於瀏覽器限制，我們逐個下載文件
+                for (let i = 0; i < generatedIcons.length; i++) {
+                    setTimeout(() => {
+                        downloadIcon(generatedIcons[i]);
+                    }, i * 200); // 間隔200ms下載
+                }
+
+                setTimeout(() => {
+                    downloadAllBtn.textContent = '✅ 下載完成';
+                    setTimeout(() => {
+                        downloadAllBtn.textContent = '📦 一鍵下載所有圖標';
+                        downloadAllBtn.disabled = false;
+                    }, 2000);
+                }, generatedIcons.length * 200 + 500);
+
+            } catch (error) {
+                console.error('下載失敗:', error);
+                alert('下載失敗，請嘗試單獨下載各個圖標');
+                downloadAllBtn.textContent = '❌ 下載失敗';
+                setTimeout(() => {
+                    downloadAllBtn.textContent = '📦 重試下載';
+                    downloadAllBtn.disabled = false;
+                }, 2000);
+            }
+        }
+    </script>
+</body>
+</html>

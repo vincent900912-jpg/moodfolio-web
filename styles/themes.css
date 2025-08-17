@@ -1,0 +1,220 @@
+/* 主題系統 */
+[data-theme="light"] {
+    --bg-primary: #ffffff;
+    --bg-secondary: #f8fafc;
+    --bg-tertiary: #f1f5f9;
+    --text-primary: #1e293b;
+    --text-secondary: #64748b;
+    --text-muted: #94a3b8;
+    --border-color: #e2e8f0;
+    --border-hover: #cbd5e1;
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+}
+
+[data-theme="dark"] {
+    --bg-primary: #0f172a;
+    --bg-secondary: #1e293b;
+    --bg-tertiary: #334155;
+    --text-primary: #f1f5f9;
+    --text-secondary: #cbd5e1;
+    --text-muted: #64748b;
+    --border-color: #334155;
+    --border-hover: #475569;
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.4), 0 2px 4px -2px rgb(0 0 0 / 0.4);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.4), 0 4px 6px -4px rgb(0 0 0 / 0.4);
+}
+
+/* 自動主題（跟隨系統） */
+@media (prefers-color-scheme: dark) {
+    [data-theme="auto"] {
+        --bg-primary: #0f172a;
+        --bg-secondary: #1e293b;
+        --bg-tertiary: #334155;
+        --text-primary: #f1f5f9;
+        --text-secondary: #cbd5e1;
+        --text-muted: #64748b;
+        --border-color: #334155;
+        --border-hover: #475569;
+        --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
+        --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.4), 0 2px 4px -2px rgb(0 0 0 / 0.4);
+        --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.4), 0 4px 6px -4px rgb(0 0 0 / 0.4);
+    }
+}
+
+@media (prefers-color-scheme: light) {
+    [data-theme="auto"] {
+        --bg-primary: #ffffff;
+        --bg-secondary: #f8fafc;
+        --bg-tertiary: #f1f5f9;
+        --text-primary: #1e293b;
+        --text-secondary: #64748b;
+        --text-muted: #94a3b8;
+        --border-color: #e2e8f0;
+        --border-hover: #cbd5e1;
+        --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+        --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+    }
+}
+
+/* 主題切換動畫 */
+body {
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+* {
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* 主題切換按鈕動畫 */
+.theme-toggle {
+    transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.theme-toggle:hover {
+    transform: scale(1.1);
+}
+
+/* 深色主題下的特殊調整 */
+[data-theme="dark"] .mood-btn {
+    border-color: var(--border-color);
+}
+
+[data-theme="dark"] .mood-btn:hover {
+    border-color: var(--primary-color);
+    background-color: var(--bg-tertiary);
+}
+
+[data-theme="dark"] .mood-btn.selected {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+[data-theme="dark"] #moodNote {
+    background-color: var(--bg-secondary);
+    border-color: var(--border-color);
+    color: var(--text-primary);
+}
+
+[data-theme="dark"] #moodNote:focus {
+    border-color: var(--primary-color);
+}
+
+[data-theme="dark"] .calendar-day {
+    color: var(--text-secondary);
+}
+
+[data-theme="dark"] .calendar-day:hover {
+    background-color: var(--bg-tertiary);
+}
+
+[data-theme="dark"] .calendar-day.today {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+[data-theme="dark"] .calendar-day.has-mood {
+    background-color: var(--success-color);
+    color: white;
+}
+
+[data-theme="dark"] .quote-card p {
+    color: var(--text-primary);
+}
+
+[data-theme="dark"] .favorite-text {
+    color: var(--text-primary);
+}
+
+[data-theme="dark"] .fortune-main h3 {
+    color: var(--text-primary);
+}
+
+[data-theme="dark"] .fortune-item label {
+    color: var(--text-primary);
+}
+
+[data-theme="dark"] .fortune-item p,
+[data-theme="dark"] .fortune-item span {
+    color: var(--text-secondary);
+}
+
+[data-theme="dark"] .stats-card h3 {
+    color: var(--text-primary);
+}
+
+[data-theme="dark"] .settings-section h3 {
+    color: var(--text-primary);
+}
+
+[data-theme="dark"] .setting-item label {
+    color: var(--text-primary);
+}
+
+[data-theme="dark"] .setting-item select,
+[data-theme="dark"] .setting-item input[type="time"] {
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    border-color: var(--border-color);
+}
+
+[data-theme="dark"] .modal-content {
+    background-color: var(--bg-primary);
+}
+
+[data-theme="dark"] .modal-header h3 {
+    color: var(--text-primary);
+}
+
+[data-theme="dark"] .modal-body {
+    color: var(--text-secondary);
+}
+
+[data-theme="dark"] .toast {
+    background-color: var(--bg-secondary);
+    color: var(--text-primary);
+}
+
+/* 高對比度模式支援 */
+@media (prefers-contrast: high) {
+    :root {
+        --primary-color: #2563eb;
+        --primary-hover: #1d4ed8;
+        --success-color: #059669;
+        --danger-color: #dc2626;
+        --warning-color: #d97706;
+    }
+    
+    [data-theme="dark"] {
+        --primary-color: #3b82f6;
+        --primary-hover: #60a5fa;
+    }
+}
+
+/* 減少動畫模式支援 */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+    
+    body {
+        transition: none;
+    }
+    
+    .page {
+        animation: none;
+    }
+    
+    .toast {
+        animation: none;
+    }
+    
+    .modal {
+        animation: none;
+    }
+}
